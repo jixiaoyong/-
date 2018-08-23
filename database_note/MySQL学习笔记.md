@@ -63,6 +63,14 @@ CREATE {DATABASE | SCHRMA} [IF NOT EXISTS] db_name [DEFAULT] CHARACTER SET [=] c
 SHOW {DATABASE | SCHEMAS} [LIKE 'pattern' | WHERE expr]
 ```
 
+查看所有数据库
+
+`SHOW DATABASES`
+
+使用某个数据库
+
+`USE database_name`
+
 查看数据库创建命令
 
 `SHOW CREATE DATABASE database_name`
@@ -366,3 +374,58 @@ ALTER TABLE tbl_name DROP FOREIGN KEY fk_symbol
 ```
 
 fk_symbol 外键约束的名称
+
+Key_name 就是约束名称
+
+查看约束
+
+```
+SHOW INDEXS from tbl_name //查看普通约束
+
+SHOW CREATE TABLE tbl_name //查看外键约束
+```
+
+* 修改数据表
+
+修改指定列
+
+```
+ALTER TABLE tbl_name MODIFY [COLUMN] col_name column_definition [FIRST|AFTER col_name]
+```
+
+修改列信息(包括列名称)
+
+```
+ALTER TABLE tbl_name CHANGE [COLUMN] old_col_name new_col_name column_definition [FIRST|AFTER col_name]
+```
+
+修改数据表名称
+
+```
+1. ALTER TABLE tbl_name RENAME [TO/AS] new_tbl_name
+2.RENAME TABLE tbl_name TO new_tbl_name [,tbl_name1 TO new_tbl_name2,...]
+```
+
+
+
+
+
+# bug fix
+
+* 第三方数据库软件登录报错“[Authentication plugin 'caching_sha2_password' cannot be loaded](https://stackoverflow.com/questions/49194719/authentication-plugin-caching-sha2-password-cannot-be-loaded)”
+
+方法1.登录后执行下列命令，并重启mysql
+
+```
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'newrootpassword';
+```
+
+方法2.修改my.ini （Restart the MySQL Server and open the Workbench again. ）
+
+```
+[mysqld]
+
+default_authentication_plugin=mysql_native_password
+
+```
+
