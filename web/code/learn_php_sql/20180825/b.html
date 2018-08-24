@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta http-equiv='Content-Type' content='text/html; charset=utf-8'/>
+    <!--<meta charset="UTF-8">-->
+    <title>标题</title>
+    <meta name="viewport" content="width=device-width"/>
+    <script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
+
+</head>
+<body>
+
+<script type="text/javascript">
+    $("document").ready(function () {
+        var url = "server.php?inAjax=1&do=getMember&username=son";
+        var data = {};
+
+        $.get(url, data, function (res) {
+            var jsonObj = eval("(" + res + ")");
+            $("#firstname").val(jsonObj.firstname);
+            $("#lastname").val(jsonObj.lastname);
+            $("#uid").val(jsonObj.email);
+
+        });
+
+    });
+</script>
+
+
+<div>
+    用户名：<input type="text" name="firstname" id="firstname"/>
+    <br/>
+    会员组:<input type="text" name="lastname" id="lastname"/>
+    <br/>
+    UID:<input type="text" name="uid" id="uid"/>
+</div>
+
+
+</body>
+</html>
