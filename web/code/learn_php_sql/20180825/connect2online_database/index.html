@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta http-equiv='Content-Type' content='text/html; charset=utf-8'/>
+    <!--<meta charset="UTF-8">-->
+    <title>Hello World</title>
+    <meta name="viewport" content="width=device-width"/>
+    <script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript">
+
+        $('document').ready(function () {
+            var url = 'server.php?request_code=1';
+            var data = {};
+
+            $.getJSON(url,data,function (result) {
+                $('#user_name').val(result.arr[0].username);
+                $('#age').val(result.arr[0].age);
+                $('#email').val(result.arr[0].email);
+                $('#create_time').val(result.arr[0].create_time);
+            });
+        })
+
+    </script>
+
+</head>
+
+<h1>Hello world!</h1>
+
+<br>user name:<input type="text" id="user_name">
+<br>age:<input type="text" id="age">
+<br>email:<input type="text" id="email">
+<br>create time:<input type="text" id="create_time">
+
+<br>
+
+</body>
+</html>
