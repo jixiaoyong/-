@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>测试数组转化json</title>
+    <script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript">
+        $('document').ready(function () {
+            var url = 'test2.php';
+            var data1 = {'do': 1 };
+
+            $.getJSON(url,data1,function (result) {
+                $("#username1").val(result.username);
+                $("#age1").val(result.age);
+            });
+
+            var data2 = {'do': 2 };
+            $.getJSON(url,data2,function (result) {
+                $("#username2").val(result['people1'].username);
+                $("#age2").val(result['people1'].age);
+            });
+
+            var data3 = {'do': 3 };
+            $.getJSON(url,data3,function (result) {
+                $("#username3").val(result['arr'].people2.username);
+                $("#age3").val(result['arr'].people2.age);
+            });
+        })
+
+    </script>
+</head>
+<body>
+
+name:<input type="text" name="username" id="username1"/><br>
+age:<input type="text" name="age" id="age1"/><br>
+
+
+2维数组:<input type="text" name="username" id="username2"/><br>
+age:<input type="text" name="age" id="age2"/><br>
+
+3维数组:<input type="text" name="username" id="username3"/><br>
+age:<input type="text" name="age" id="age3"/><br>
+
+</body>
+</html>
