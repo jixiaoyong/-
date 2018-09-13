@@ -1,0 +1,8 @@
+#说明
+这个工程是罗老师AOSP系列中通过IHelloService操作虚拟设备读取/写入值的APP。
+
+其中通过通用的方法获取IHelloService获取该服务：
+```
+mHelloService = (IHelloService) getSystemService("hello");
+```
+
