@@ -47,7 +47,7 @@
  * Copyright © 2018 jixiaoyong All rights reserved.
  * @Project TestJava
  * @Package cf.android666
- * @Title: TestJava.java 
+ * @Title: TestA.java 
  * @Author:jixiaoyong
  * @Emil:jixiaoyong1995@gmail.com
  * @Website:www.android666.cf
@@ -55,21 +55,21 @@
 package cf.android666;
 
 /**
- * 说明如何配置文件说明信息
- * 
+ * TODO  description
  * @author jixiaoyong1995@gmail.com
- * @version 1.0
+ * @version 
  */
-public class TestJava {
+public class TestA {
 
 	/**
-	 * 主方法
-	 * 
-	 * @param args 入参
+	 * @param args
 	 */
 	public static void main(String[] args) {
+		// TODO Auto-generated method stub
 
 	}
+
 }
+
 ```
 
