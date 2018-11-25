@@ -110,7 +110,11 @@ class CameraPreview(
     }
 
     override fun surfaceDestroyed(holder: SurfaceHolder?) {
-        mCamera?.stopPreview();
+        try {
+            mCamera?.stopPreview()
+        } catch (e: java.lang.Exception) {
+            e.printStackTrace()
+        }
     }
 
     override fun surfaceCreated(holder: SurfaceHolder?) {
