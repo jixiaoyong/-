@@ -1,22 +1,22 @@
-package shujujiegou;
+package shujujiegou.InfixAndPostfix;
 
 /**
  * author: jixiaoyong
  * email: jixiaoyong1995@gmail.com
  * website: www.jixiaoyong.github.io
  * date: 2018/12/12
- * description: 保存运算数字的栈
+ * description: 保存运算符号的栈
  */
-public class StringNumberStack {
+public class OperatorStack {
 
     private final int stepSize = 10;
-    private StringNumber[] items = new StringNumber[stepSize];
+    private char[] items = new char[stepSize];
     private int TOP = -1;
 
-    public void insert(StringNumber c) {
+    public void insert(char c) {
         if (TOP >= items.length - 1) {
             // 拓展数组
-            StringNumber[] newArray = new StringNumber[items.length + stepSize];
+            char[] newArray = new char[items.length + stepSize];
             for (int i = 0; i < items.length; i++) {
                 newArray[i] = items[i];
             }
@@ -25,14 +25,14 @@ public class StringNumberStack {
         items[++TOP] = c;
     }
 
-    public StringNumber pop() throws Exception {
+    public char pop() throws Exception {
         if (TOP < 0) {
             throw new Exception("Strcak is empty");
         }
         return items[TOP--];
     }
     
-    public StringNumber peek() throws Exception{
+    public char peek() throws Exception{
         if (TOP < 0) {
             throw new Exception("Strcak is empty");
         }
@@ -47,7 +47,7 @@ public class StringNumberStack {
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
         for (int i = 0; i < TOP + 1; i++) {
-            stringBuilder.append(items[i].value());
+            stringBuilder.append(items[i]);
         }
         return stringBuilder.toString();
     }

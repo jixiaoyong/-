@@ -1,4 +1,4 @@
-package shujujiegou;
+package shujujiegou.InfixAndPostfix;
 
 /**
  * author: jixiaoyong
