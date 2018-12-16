@@ -1,6 +1,6 @@
 package shujujiegou.link
 
-import shujujiegou.link.Triangle.mergeSort
+import shujujiegou.link.Triangle.fullThePackage
 
 /**
  * author: jixiaoyong
@@ -145,6 +145,73 @@ object Triangle {
         return resultArr
     }
 
+    /**
+     * 计算某数的乘方，归并排序思路
+     */
+    fun power(num: Long, power: Int): Long {
+        if (power == 0) {
+            return 1
+        } else if (power == 1) {
+            return num
+        } else {
+            var half: Int
+            if (power % 2 == 0) {
+                half = power / 2
+            } else {
+                half = (power + 1) / 2
+            }
+            return power(num, half) * power(num, power - half)
+        }
+    }
+
+    /**
+     * 背包问题
+     * 一批大小各异的物资，选择一组恰好达到背包承重量n的组合
+     * 思路：
+     * 1/2 先选出一个物资i，在剩下的物资中选择满足重量为n-i的物资
+     * 2/2 没有找到的话重复该过程，直到找到或遍历完所有组合
+     * @param array 剩余的物资
+     * @param weight 要达到的重量
+     * @param str 已经选择的物资
+     */
+    fun fullThePackage(array: IntArray, weight: Int, str: String) {
+
+        if (array.size == 0) {
+            return
+        }
+
+        for (i in 0 until array.size) {
+            var nextStr = str
+
+            if (array[i] == weight) {
+                println("******end:******$nextStr [${array[i]}]")
+                System.exit(0)//只需要找出一个组合
+                break
+            }
+
+            if (weight - array[i] < 0) {
+                continue
+            }
+            nextStr = "$str [${array[i]}]"
+            fullThePackage(copyArrayExclusiveIndex(array, i), weight - array[i], nextStr)
+        }
+    }
+
+    fun copyArrayExclusiveIndex(array: IntArray, index: Int): IntArray {
+        if (array.size == 0) {
+            return array
+        }
+
+        var newArray = IntArray(array.size - 1)
+        var point = 0
+        array.mapIndexed { i, it ->
+            if (index != i) {
+                newArray[point++] = it
+            }
+        }
+        return newArray
+    }
+
 }
 
 fun main(args: Array<String>) {
@@ -158,8 +225,13 @@ fun main(args: Array<String>) {
 //    hanioTower(64, "A", "B", "C")
 //    println("********hanioStepNum is $hanioStepNum*******")
 
-    var intArr = intArrayOf(6,23,1,0,34,32334,323,42, 2, 3)
-    mergeSort(intArr).map {
-        print("$it,")
-    }
+//    var intArr = intArrayOf(6, 23, 1, 0, 34, 32334, 323, 42, 2, 3)
+//    mergeSort(intArr).map {
+//        print("$it,")
+//    }
+
+//    println(power(2, 30))
+
+    fullThePackage(intArrayOf(11, 8, 2, 4, 7, 6, 5), 20, "")
+
 }
