@@ -132,6 +132,11 @@ object SortUtils {
         if (right - left <= 0) {
             return
         }
+        /**
+         * n 这个枢纽的取法很关键，决定了算法的速度
+         * TODO 除过这里用到的取法之外，还可以有"三数据项取中"法，在数组首、尾、中取数排序，选中间的数作为枢纽。这样排序数组要>3
+         * 对于这些小于3的数组可以用插入排序法进行排序
+         */
         val n = quickArray[right]
         val nIndex = devideArrayByN1(left, right, n)
         if (nIndex > 0) {
