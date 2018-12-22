@@ -193,6 +193,8 @@ class BinaryNode(val iId: Int, val dData: Double, var left: BinaryNode? = null, 
     }
 }
 
+
+
 fun main(args: Array<String>) {
     var binaryTree = BinaryTree()
     binaryTree.insert(1, 1.1)
