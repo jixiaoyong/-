@@ -24,16 +24,19 @@ package shujujiegou.tree
  *              3. 父节点为黑色 -> ✅
  *              4. 父节点 红色；叔节点 红色 -> ❌ 将父节点，叔节点涂黑，将祖父节点涂红，当前节点指向祖父
  *              5. 父节点 红色；叔节点 黑色 ； 为父节点的左节点 -> ❌ 父节点 涂黑 ；祖父节点 涂红，以祖父节点为支点，右旋，涂黑根节点
- *              【特殊】如果祖父节点没有左节点，则规则5，6翻转，需要对父先右旋，再以父为新插入的的点，判断得出需要祖左旋
+ *              【特殊】如果祖父节点没有左节点(内侧子孙节点)，则旋转两次：规则5，6翻转，需要对父先右旋，再以父为新插入的的点，判断得出需要祖左旋
  *              6. 父节点 红色；叔节点 黑色 ； 为父节点的右节点 -> ❌ 父节点为支点，左旋
  *
  *              删除情况分为：
+ *              1. 可以不删除节点，而是给节点增加一个属性，标记是否被删除
+ *              2. 实际删除节点：//TODO 红黑树删除
+ *
  *
  *
  *              【注意】旋转
  *              以某个点为支点旋转（右旋为例，旋转时注意更新各个节点的父节点）：
  *              1/2 将该点a的右节点b放到b的右节点的位置，再将该点a放到a的右节点的位置，依次类推
- *              1/2 特殊的，将该点a的内侧孙子（a的左子节点c的右子节点d）断开与其父节点c的连接，转而连接到a上，成为a的左子节点
+ *              2/2 特殊的，将该点a的内侧孙子（a的左子节点c的右子节点d）断开与其父节点c的连接，转而连接到a上，成为a的左子节点
  *
  *              【资源】
  *              在线红黑树 https://sandbox.runjs.cn/show/2nngvn8w
@@ -80,9 +83,7 @@ class RedBlackTree {
         if (uncleNode != null && uncleNode.isRed) {
             grandParent.right!!.isRed = false
             grandParent.left!!.isRed = false
-//            if (root!!.id != grandParent.id) {
             grandParent.isRed = true
-//            }
             checkRules(grandParent)
         } else {
 
@@ -109,7 +110,7 @@ class RedBlackTree {
      * 如果父红叔黑，为左，但是祖的左子节点为null
      * 将之前的规则5，6反过来
      * 就需要对父先右旋，再以父为新插入的的点，判断得出需要祖左旋
-     * 32,3,53,13,983,137,237,83,483,43,183
+     * 32,3,53,13,983,[137],237,83,483,43,183
      */
     private fun doSpecialRevolve(node: RedBlackNode) {
         revolveRight(node)
@@ -204,20 +205,26 @@ class RedBlackNode(var id: Int, var isRed: Boolean = true, var left: RedBlackNod
 
 fun main(args: Array<String>) {
     var rbTree = RedBlackTree()
-    rbTree.insert(RedBlackNode(32))
-    rbTree.insert(RedBlackNode(3))
-    rbTree.insert(RedBlackNode(53))
-    rbTree.insert(RedBlackNode(13))
-    rbTree.insert(RedBlackNode(983))
-    rbTree.insert(RedBlackNode(137))
-    rbTree.insert(RedBlackNode(237))
-    rbTree.insert(RedBlackNode(83))
-    rbTree.insert(RedBlackNode(483))
-    rbTree.insert(RedBlackNode(43))
-    rbTree.insert(RedBlackNode(183))
-    rbTree.insert(RedBlackNode(23))
-    rbTree.insert(RedBlackNode(1))
-    rbTree.insert(RedBlackNode(10))
+//    rbTree.insert(RedBlackNode(32))
+//    rbTree.insert(RedBlackNode(3))
+//    rbTree.insert(RedBlackNode(53))
+//    rbTree.insert(RedBlackNode(13))
+//    rbTree.insert(RedBlackNode(983))
+//    rbTree.insert(RedBlackNode(137))
+//    rbTree.insert(RedBlackNode(237))
+//    rbTree.insert(RedBlackNode(83))
+//    rbTree.insert(RedBlackNode(483))
+//    rbTree.insert(RedBlackNode(43))
+//    rbTree.insert(RedBlackNode(183))
+//    rbTree.insert(RedBlackNode(23))
+//    rbTree.insert(RedBlackNode(1))
+//    rbTree.insert(RedBlackNode(10))
+//    rbTree.display()
+
+    var arr = arrayOf(32,3,53,13,983,137,237,83,483,43,183)
+    arr.map {
+        rbTree.insert(RedBlackNode(it))
+    }
     rbTree.display()
 }
 

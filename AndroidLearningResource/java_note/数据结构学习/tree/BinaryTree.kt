@@ -100,6 +100,7 @@ class BinaryTree {
                 } else {
                     parent.left = current.right
                 }
+                //TODO 是否需要将右节点的左子节点指向当前点的左子节点
                 return
             }
 
