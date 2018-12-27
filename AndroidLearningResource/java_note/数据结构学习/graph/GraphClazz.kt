@@ -37,5 +37,200 @@
  *
  *  # 拓扑排序
  */
-class GraphClazz {
+class GraphClazz(val maxSize: Int) {
+
+    private var hashMap = hashMapOf<Int, GraphicNode>()
+
+    fun insert(key: Int) {
+        if (!hashMap.containsKey(key)) {
+            hashMap[key] = GraphicNode(key)
+        }
+    }
+
+    fun addEdge(start: Int, end: Int) {
+        if (hashMap.containsKey(start) && hashMap.containsKey(end)) {
+            var sindex = hashMap[start]
+            var eindex = hashMap[end]
+
+            while (sindex?.next != null) {
+                sindex = sindex.next
+            }
+            sindex!!.next = GraphicNode(hashMap[end]!!.data)
+            while (eindex?.next != null) {
+                eindex = eindex.next
+            }
+            eindex!!.next = GraphicNode(hashMap[start]!!.data)
+        }
+    }
+
+    fun display(type: Int) {
+        if (hashMap.size == 0) {
+            return
+        }
+        when (type) {
+            SEARCH_TYPE_DFS -> dfs()
+            SEARCH_TYPE_BFS -> bfs()
+        }
+    }
+
+    private fun dfs() {
+        var stacks = DfsStacks(hashMap.size)
+        var keyArr = hashMap.keys.toIntArray()
+        stacks.push(keyArr[0])
+        hashMap[keyArr[0]]?.isVisited = true
+        var index = hashMap[keyArr[0]]
+        while (stacks.size > 0) {
+            var availableKey = getAvailableNode(index!!.data)
+            if (availableKey != -1) {
+                index = hashMap[availableKey]//深度优先搜索，会先顺着一个邻接点一直走到头
+                index!!.isVisited = true
+                stacks.push(availableKey)
+            } else {
+                var pop = stacks.pop()
+                print("$pop ")
+                index = hashMap[stacks.peek()]//如果一个邻接点再没有未访问的邻接点，那么去访问下一个未访问的邻接点
+            }
+        }
+
+    }
+
+    private fun bfs() {
+        var queue = BfsQueue()
+        var keyArr = hashMap.keys.toIntArray()
+        queue.push(keyArr[0])
+        hashMap[keyArr[0]]!!.isVisited = true
+        var index = hashMap[keyArr[0]]
+        while (queue.size > 0) {
+            var availableKey = getAvailableNode(index!!.data)
+            if (availableKey != -1) {
+                var current = hashMap[availableKey]!!//广度优先搜索，优先将一个节点的所有邻接点依次访问
+                current.isVisited = true
+                queue.push(current.data)
+            } else {
+                var pop = queue.pop()
+                print("$pop ")
+                if (queue.peek() == -1) {
+                    break
+                }
+                index = hashMap[queue.peek()]//如果该点没有未访问的邻接点，就选择去访问该点邻接点的邻接点
+            }
+        }
+    }
+
+    /**
+     * 查找某个点未访问的邻接点
+     */
+    private fun getAvailableNode(key: Int): Int {
+        var index = hashMap[key]
+        while (index != null) {
+            if (!hashMap[index.data]!!.isVisited) {
+                return index.data
+            }
+            index = index.next
+        }
+        return -1
+    }
+
+    /**
+     * 清除访问标记
+     */
+    fun resetVisit() {
+        hashMap.keys.map {
+            hashMap[it]?.isVisited = false
+        }
+    }
+
+    companion object {
+        const val SEARCH_TYPE_DFS = 0
+        const val SEARCH_TYPE_BFS = 1
+    }
+}
+
+class GraphicNode(var data: Int, var isVisited: Boolean = false, var next: GraphicNode? = null) {
+    override fun toString(): String {
+        return "[$data]"
+    }
+}
+
+class DfsStacks(private val maxSize: Int) {
+
+    private val dataArr = IntArray(maxSize)
+    var size = 0
+        private set
+
+    fun push(key: Int) {
+        if (dataArr.contains(key)) {
+            return
+        }
+        if (size < maxSize) {
+            dataArr[size++] = key
+        }
+    }
+
+    fun pop(): Int {
+        if (size > 0) {
+            return dataArr[--size]
+        }
+        return -1
+    }
+
+    fun peek(): Int {
+        if (size > 0) {
+            return dataArr[size - 1]
+        }
+        return -1
+    }
+}
+
+class BfsQueue {
+    private var head: GraphicNode? = null
+    private var foot: GraphicNode? = null
+    var size = 0
+        private set
+
+    fun push(key: Int) {
+        if (head == null) {
+            head = GraphicNode(key)
+            foot = head
+        } else {
+            foot!!.next = GraphicNode(key)
+            foot = foot!!.next
+        }
+        size++
+    }
+
+    fun pop(): Int {
+        if (head == null) {
+            return -1
+        }
+        var result = head!!.data
+        head = head!!.next
+        size--
+        return result
+    }
+
+    fun peek(): Int {
+        return head?.data ?: -1
+    }
+
+}
+
+fun main(args: Array<String>) {
+    var testArr = arrayOf(20, 323, 12, 43, 1,33)
+    var graphClazz = GraphClazz(testArr.size)
+    testArr.map {
+        graphClazz.insert(it)
+    }
+    graphClazz.addEdge(20, 323)
+    graphClazz.addEdge(20, 1)
+    graphClazz.addEdge(323, 1)
+    graphClazz.addEdge(323, 12)
+    graphClazz.addEdge(43, 12)
+    graphClazz.addEdge(33, 1)
+
+    println("BFS:")
+    graphClazz.display(GraphClazz.SEARCH_TYPE_BFS)
+    println("\nDFS:")
+    graphClazz.resetVisit()
+    graphClazz.display(GraphClazz.SEARCH_TYPE_DFS)
 }
