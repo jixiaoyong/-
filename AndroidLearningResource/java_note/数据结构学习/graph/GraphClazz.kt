@@ -91,7 +91,6 @@ class GraphClazz(val maxSize: Int) {
                 index = hashMap[stacks.peek()]//如果一个邻接点再没有未访问的邻接点，那么去访问下一个未访问的邻接点
             }
         }
-
     }
 
     private fun bfs() {
