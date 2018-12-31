@@ -3,7 +3,7 @@ package shujujiegou.graph
 /**
  * author: jixiaoyong
  * email: jixiaoyong1995@gmail.com
- * website: www.jixiaoyong.github.io
+ * website: https://jixiaoyong.github.io
  * date: 2018-12-28
  * description: 有向图
  */

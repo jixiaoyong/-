@@ -3,7 +3,7 @@ package shujujiegou.tree
 /**
  * author: jixiaoyong
  * email: jixiaoyong1995@gmail.com
- * website: www.jixiaoyong.github.io
+ * website: https://jixiaoyong.github.io
  * date: 2018-12-23
  * description: 哈希表
  * 将数据保存在通过hash函数计算得到的下标中，查找很快，但是如果存储到接近hash表容量时就会变得很慢

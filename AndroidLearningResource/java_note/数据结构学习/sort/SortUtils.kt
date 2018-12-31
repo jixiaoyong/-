@@ -6,7 +6,7 @@ import shujujiegou.sort.SortUtils.quickSort1
 /**
  * author: jixiaoyong
  * email: jixiaoyong1995@gmail.com
- * website: www.jixiaoyong.github.io
+ * website: https://jixiaoyong.github.io
  * date: 2018/12/16
  * description: 高级排序：希尔排序，快速排序，基数排序
  */
