@@ -1,0 +1,205 @@
+package com.test.myapplication2
+
+import android.annotation.SuppressLint
+import android.content.Context
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Rect
+import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
+import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.TextView
+import com.test.myapplication2.R
+import kotlinx.android.synthetic.main.dispatch_list_activity.*
+
+/**
+ *  Created by jixiaoyong1995@gmail.com
+ *  Data: 2019/3/29.
+ *  Description:实现recycleView标题栏悬停效果
+ *  原理是在recycleView第一个可见view的上面画了一个标题栏，并根据recycleView的内容实时的更新
+ *
+ * TODO 修改这篇文章 https://jixiaoyong.github.io/blog/posts/a2c96aac/
+ *  参考资料：
+ *  https://github.com/tuacy/RecyclerPinnedHeader
+ *  https://www.jianshu.com/p/effe9b4333de
+ *
+ *  对应layout布局：
+ *
+ *  <?xml version="1.0" encoding="utf-8"?>
+ *  <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+ *  android:layout_width="match_parent"
+ *  android:layout_height="wrap_content"
+ *  android:orientation="vertical">
+ *  <RecycleView
+ *  android:id="@+id/recycler3"
+ *  android:layout_width="match_parent"
+ *  android:layout_height="match_parent" />
+ * </LinearLayout>
+ *
+ * <?xml version="1.0" encoding="utf-8"?>
+ * <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+ * android:id="@+id/background"
+ * android:layout_width="match_parent"
+ * android:layout_height="50dp"
+ * android:orientation="horizontal">
+ *
+ * <TextView
+ * android:id="@+id/text"
+ * android:layout_width="match_parent"
+ * android:layout_height="match_parent"
+ * android:gravity="center"
+ * android:text="ring/app_name" />
+ *
+ * </LinearLayout>
+ */
+
+class DispatchListActivity : AppCompatActivity() {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.dispatch_list_activity)
+
+        recycler3.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        recycler3.adapter = MyAdapter3()
+        recycler3.addItemDecoration(myD)
+    }
+
+    val myD = object : RecyclerView.ItemDecoration() {
+        override fun onDrawOver(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
+            super.onDrawOver(c, parent, state)
+            val mAdapter = parent.adapter as MyAdapter3
+
+            //parent.getChildAt()获取屏幕可见的child
+            val firstChild = parent.getChildAt(0)
+            val pinnedChildId = mAdapter.getNextPinnedChild(parent.getChildAdapterPosition(firstChild), mAdapter)
+
+            if (pinnedChildId != -1) {
+                //创建一个ViewHolder
+                val pinHolder = mAdapter.onCreateViewHolder(parent, pinnedChildId)
+                //将这个holder和数据绑定
+                mAdapter.onBindViewHolder(pinHolder, pinnedChildId)
+                //获取到这个holder对应的view
+                val pinnedHeaderView = pinHolder.itemView
+                var selectOffset = 0
+                //对view的宽高进行设置
+                ensurePinnedHeaderViewLayout(pinnedHeaderView, parent)
+
+                for (x in 0 until mAdapter.itemCount) {
+                    Log.d("TAG", "start scan x:$x")
+                    if (mAdapter.isPinnedTab(parent.getChildAdapterPosition(parent.getChildAt(x)))) {
+                        //过滤出第一个在顶部显示的view
+                        val childView = parent.getChildAt(x)
+                        val selectTop = childView.top
+                        val painViewHeight = pinnedHeaderView.height
+
+                        //计算在顶部的view的偏移量selectOffset，这个和在顶部显示的第一个child位置绑定，以实现将该view顶上去的效果
+                        if (selectTop in 1..(painViewHeight - 1)) {
+                            selectOffset = selectTop - painViewHeight
+                        }
+                        val saveCount = c.save()
+                        val params = pinnedHeaderView.layoutParams as RecyclerView.LayoutParams
+                        c.translate(params.leftMargin.toFloat(), selectOffset.toFloat())
+                        c.clipRect(0, 0, parent.width, pinnedHeaderView.measuredHeight)
+
+                        pinnedHeaderView.draw(c)
+                        c.restoreToCount(saveCount)
+                    }
+                }
+            }
+        }
+
+        private fun ensurePinnedHeaderViewLayout(pinView: View, recyclerView: RecyclerView) {
+            if (pinView.isLayoutRequested) {
+                /**
+                 * 用的是RecyclerView的宽度测量，和RecyclerView的宽度一样
+                 */
+                val layoutParams = pinView.layoutParams as RecyclerView.LayoutParams
+                        ?: throw NullPointerException("PinnedHeaderItemDecoration")
+                val widthSpec = View.MeasureSpec.makeMeasureSpec(
+                        recyclerView.measuredWidth - layoutParams.leftMargin - layoutParams.rightMargin, View.MeasureSpec.EXACTLY)
+
+                val heightSpec: Int
+                if (layoutParams.height > 0) {
+                    heightSpec = View.MeasureSpec.makeMeasureSpec(layoutParams.height, View.MeasureSpec.EXACTLY)
+                } else {
+                    heightSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+                }
+                pinView.measure(widthSpec, heightSpec)
+                pinView.layout(0, 0, pinView.measuredWidth, pinView.measuredHeight)
+            }
+        }
+
+        override fun onDrawOver(c: Canvas, parent: RecyclerView) {
+            super.onDrawOver(c, parent)
+        }
+
+        override fun onDraw(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
+            super.onDraw(c, parent, state)
+        }
+
+        override fun onDraw(c: Canvas, parent: RecyclerView) {
+            super.onDraw(c, parent)
+        }
+
+        override fun getItemOffsets(outRect: Rect, itemPosition: Int, parent: RecyclerView) {
+            super.getItemOffsets(outRect, itemPosition, parent)
+        }
+
+        override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
+            super.getItemOffsets(outRect, view, parent, state)
+        }
+    }
+
+
+    class MyAdapter3 : RecyclerView.Adapter<MyAdapter3.MyViewHolder>() {
+        fun isPinnedPosition(position: Int): Boolean {
+            return position % 6 == 0
+        }
+
+        fun isPinnedTab(index: Int): Boolean {
+            return index % 6 == 0
+        }
+
+        fun getNextPinnedChild(childAdapterPosition: Int, mAdapter: MyAdapter3): Int {
+            for (index in childAdapterPosition downTo 0) {
+                Log.d("TAG", "childAdapterPosition:$childAdapterPosition X is $index")
+                if (mAdapter.isPinnedPosition(index)) {
+                    return index
+                }
+            }
+            return -1
+        }
+
+        lateinit var context: Context
+        override fun onCreateViewHolder(p0: ViewGroup, p1: Int): MyViewHolder {
+            context = p0.context
+            val view = LayoutInflater.from(p0.context).inflate(R.layout.item_recycler_swipe, p0, false)
+            return MyViewHolder(view)
+        }
+
+        override fun getItemCount(): Int {
+            return 100
+        }
+
+        @SuppressLint("SetTextI18n")
+        override fun onBindViewHolder(p0: MyViewHolder, p1: Int) {
+            if (isPinnedTab(p1)) {
+                p0.text.text = "THIS IS TITLE $p1"
+                p0.text.setBackgroundColor(Color.YELLOW)
+            } else {
+                p0.text.text = "THIS IS CONTENT $p1"
+                p0.text.setBackgroundColor(Color.TRANSPARENT)
+            }
+        }
+
+        class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+            val text = itemView.findViewById<TextView>(R.id.text)!!
+        }
+    }
+
+}
